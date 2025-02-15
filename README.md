@@ -1,18 +1,27 @@
+# Описание предметной области
+
+Основное назначение проекта заключается в предоставлении пользователям возможности поиска, просмотра и оценки актуальных событий, происходящих в непосредственной близости от них, в режиме реального времени. Каждое событие отображается на интерактивной карте в виде маркера, при клике на который открывается подробная информация: изображения, видео, аудио, текстовые описания и комментарии других пользователей. Обычные пользователи могут участвовать в активностях, связанных с событием, тогда как авторы имеют расширенные права создания, редактирования и удаления событий.
+
 # PgAdmin
 
 Url: `localhost:5000`\
 Login: `admin@admin.com`\
-Password: `admin`\
+Password: `admin`
 
 # PostgreSQL
 
 Volume: `hse_db_posrgresql`\
 Database: `itm`\
-Password: `admin`\
+Password: `admin`
 
-Скрипты в "postgresql/init" должны иметь окончания LF для успешной работы.
+Примеры запросов в `pgadmin\data\storage\admin_admin.com`.
 
-Запуск pgbench: ```docker-compose -f docker-compose-pgbench.yml up | docker-compose -f docker-compose-pgbench.yml down```
+Скрипты в `postgresql/init` должны иметь окончания LF для успешной работы.
+
+Запуск pgbench: 
+```
+docker-compose -f docker-compose-pgbench.yml up | docker-compose -f docker-compose-pgbench.yml down
+```
 
 Результаты pgbench (i5-3570k, 16Gb DDR3, 1Tb Samsung SSD 860 QVO):
 ```

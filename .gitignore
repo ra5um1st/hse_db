@@ -1,1 +1,5 @@
-pgadmin/data
+pgadmin/*
+!pgadmin/servers.json
+!pgadmin/data
+pgadmin/data/*
+!pgadmin/data/storage
