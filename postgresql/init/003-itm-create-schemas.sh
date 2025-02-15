@@ -10,18 +10,18 @@ create schema if not exists users;
 
 -- Create tables
 
--- shema users
+-- schema users
 
 create table if not exists itm.users.role(
 	id bigserial primary key,
-	name varchar(255) not null,
+	name varchar(255) not null unique,
 	description varchar(255),
 	created timestamptz default now()
 );
 
 create table if not exists itm.users.permission(
 	id bigserial primary key,
-	name varchar(255) not null,
+	name varchar(255) not null unique,
 	description varchar(255),
 	created timestamptz default now()
 );
@@ -35,23 +35,25 @@ create table if not exists itm.users.role_permission(
 create table if not exists itm.users.user(
 	id bigserial primary key,
 	role_id bigint references itm.users.role,
-	username varchar(255) not null,
+	username varchar(255) not null unique,
 	password bytea not null,
-	email varchar(255),
+	email varchar(255) unique,
 	created timestamptz default now()
 );
 
--- shema events
+create index on itm.users.user (role_id);
+
+-- schema events
 
 create table if not exists itm.events.reaction(
 	id bigserial primary key,
-	name varchar(255) not null,
+	name varchar(255) not null unique,
 	gif_url varchar(2047)
 );
 
 create table if not exists itm.events.tag(
 	id bigserial primary key,
-	name varchar(31)
+	name varchar(31) unique
 );
 
 create table if not exists itm.events.event(
@@ -66,6 +68,8 @@ create table if not exists itm.events.event(
 	media_type varchar(15),
 	media_url varchar(2047)
 );
+
+create index on itm.events.event (location) using gist;
 
 create table if not exists itm.events.event_tag(
 	event_id bigint not null references itm.events.event,
@@ -88,5 +92,7 @@ create table if not exists itm.events.comment(
 	created timestamptz default now(),
 	content varchar(4095)
 );
+
+create index on itm.events.comment (event_id, user_id);
 
 EOSQL

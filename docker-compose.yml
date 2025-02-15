@@ -22,7 +22,7 @@ services:
     volumes:
       - "./postgresql/init:/docker-entrypoint-initdb.d"
       - "postgresql:/var/lib/postgresql/data"
-
+        
 volumes:
   postgresql:
     external: false

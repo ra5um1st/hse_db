@@ -1,0 +1,82 @@
+services:
+  pgbench_create_db:
+    image: postgres:17.3-alpine
+    container_name: pgbench_create_db
+    environment:
+      PGAPPNAME: pgbench_create_db
+      PGHOST: postgresql
+      PGUSER: postgres
+      PGPASSWORD: admin
+      PGDATABASE: itm
+    command: [ 
+      "psql", 
+      "-U", "postgres",
+      "-p", "5432",
+      "-d", "itm",
+      "-v", "ON_ERROR_STOP=1",
+      "-c", "CREATE DATABASE pgbench;" ]
+      
+  pgbench_init:
+    image: postgres:17.3-alpine
+    container_name: pgbench_init
+    environment:
+      PGAPPNAME: pgbench_init
+      PGHOST: postgresql
+      PGUSER: postgres
+      PGPASSWORD: admin
+      PGDATABASE: pgbench
+    depends_on: 
+      pgbench_create_db:
+        condition: service_started
+    command: [ 
+      "pgbench",
+      "-h", "postgresql",
+      "-p", "5432",
+      "-U", "postgres",
+      "-i",
+      "-s", "10",
+      "pgbench" ]
+      
+  pgbench:
+    image: postgres:17.3-alpine
+    container_name: pgbench
+    environment:
+      PGAPPNAME: pgbench
+      PGHOST: postgresql
+      PGUSER: postgres
+      PGPASSWORD: admin
+      PGDATABASE: pgbench
+    depends_on: 
+      pgbench_init:
+        condition: service_completed_successfully
+    command: [
+      "pgbench", 
+      "-h", "postgresql",
+      "-p", "5432",
+      "-U", "postgres",
+      "-c", "50",
+      "-j", "4",
+      "-P", "1",
+      "-T", "60",
+      "-r",
+      "pgbench" ]
+      
+  pgbench_clear:
+    image: postgres:17.3-alpine
+    container_name: pgbench_clear
+    environment:
+      PGAPPNAME: pgbench_clear
+      PGHOST: postgresql
+      PGUSER: postgres
+      PGPASSWORD: admin
+      PGDATABASE: itm
+    depends_on: 
+      pgbench:
+        condition: service_completed_successfully
+    command: [ 
+      "psql", 
+      "-U", "postgres",
+      "-p", "5432",
+      "-d", "itm",
+      "-v", "ON_ERROR_STOP=1",
+      "-c", "DROP DATABASE pgbench;" ]
